@@ -151,7 +151,11 @@
                         >
                           {% if item.image %}
                             {% comment %} Leave empty space due to a:empty CSS display: none rule {% endcomment %}
-                            <a href="{{ item.url }}" class="cart-item__link" tabindex="-1" aria-hidden="true"> </a>
+                            {%- if item.product.tags contains 'gift-product' -%}
+                              <span class="cart-item__link" aria-hidden="true"> </span>
+                            {%- else -%}
+                              <a href="{{ item.url }}" class="cart-item__link" tabindex="-1" aria-hidden="true"> </a>
+                            {%- endif -%}
                             <img
                               class="cart-item__image"
                               src="{{ item.image | image_url: width: 300 }}"
@@ -168,9 +172,15 @@
                             <p class="caption-with-letter-spacing light">{{ item.product.vendor }}</p>
                           {%- endif -%}
 
-                          <a href="{{ item.url }}" class="cart-item__name h4 break">
-                            {{- item.product.title | escape -}}
-                          </a>
+                          {%- if item.product.tags contains 'gift-product' -%}
+                            <span class="cart-item__name h4 break">
+                              {{- item.product.title | escape -}}
+                            </span>
+                          {%- else -%}
+                            <a href="{{ item.url }}" class="cart-item__name h4 break">
+                              {{- item.product.title | escape -}}
+                            </a>
+                          {%- endif -%}
 
                           {%- if item.original_price != item.final_price -%}
                             <div class="cart-item__discounted-prices">
@@ -358,12 +368,25 @@
                           <quantity-popover>
                             <div class="cart-item__quantity-wrapper quantity-popover-wrapper">
                               <div class="quantity-popover-container{% if has_qty_rules or has_vol_pricing %} quantity-popover-container--hover{% endif %}">
+                                {%- liquid
+                                  assign can_update_quantity = item.instructions.can_update_quantity | default: true
+                                  assign is_cart_progress_gift = false
+                                  for property in item.properties
+                                    if property.first == '_cart_progress_gift' and property.last == 'true'
+                                      assign is_cart_progress_gift = true
+                                      break
+                                    endif
+                                  endfor
+                                  if is_cart_progress_gift or item.product.tags contains 'gift-product'
+                                    assign can_update_quantity = false
+                                  endif
+                                -%}
                                 <quantity-input class="quantity cart-quantity">
                                   <button
                                     class="quantity__button"
                                     name="minus"
                                     type="button"
-                                    {% if item.instructions and item.instructions.can_update_quantity == false %}
+                                    {% if can_update_quantity == false %}
                                       disabled
                                     {% endif %}
                                   >
@@ -396,7 +419,7 @@
                                     aria-label="{{ 'products.product.quantity.input_label' | t: product: item.product.title | escape }}"
                                     id="Drawer-quantity-{{ item.index | plus: 1 }}"
                                     data-index="{{ item.index | plus: 1 }}"
-                                    {% if item.instructions and item.instructions.can_update_quantity == false %}
+                                    {% if can_update_quantity == false %}
                                       disabled
                                     {% endif %}
                                   >
@@ -404,7 +427,7 @@
                                     class="quantity__button"
                                     name="plus"
                                     type="button"
-                                    {% if item.instructions and item.instructions.can_update_quantity == false %}
+                                    {% if can_update_quantity == false %}
                                       disabled
                                     {% endif %}
                                   >

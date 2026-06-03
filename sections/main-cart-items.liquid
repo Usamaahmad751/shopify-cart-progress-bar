@@ -99,7 +99,11 @@
                     <td class="cart-item__media">
                       {% if item.image %}
                         {% comment %} Leave empty space due to a:empty CSS display: none rule {% endcomment %}
-                        <a href="{{ item.url }}" class="cart-item__link" aria-hidden="true" tabindex="-1"> </a>
+                        {%- if is_cart_progress_gift or item.product.tags contains 'gift-product' -%}
+                          <span class="cart-item__link" aria-hidden="true"> </span>
+                        {%- else -%}
+                          <a href="{{ item.url }}" class="cart-item__link" aria-hidden="true" tabindex="-1"> </a>
+                        {%- endif -%}
                         <div class="cart-item__image-container gradient {% if item.parent_relationship.parent == null %}global-media-settings{% endif %}">
                           <img
                             src="{{ item.image | image_url: width: 300 }}"
@@ -118,7 +122,11 @@
                         <p class="caption-with-letter-spacing">{{ item.product.vendor }}</p>
                       {%- endif -%}
 
-                      <a href="{{ item.url }}" class="cart-item__name h4 break">{{ item.product.title | escape }}</a>
+                      {%- if is_cart_progress_gift or item.product.tags contains 'gift-product' -%}
+                        <span class="cart-item__name h4 break">{{ item.product.title | escape }}</span>
+                      {%- else -%}
+                        <a href="{{ item.url }}" class="cart-item__name h4 break">{{ item.product.title | escape }}</a>
+                      {%- endif -%}
 
                       {%- if item.original_price != item.final_price -%}
                         <div class="cart-item__discounted-prices">
@@ -307,6 +315,9 @@
                             {%- endif -%}
                             <quantity-input class="quantity cart-quantity">
                               {% assign can_update_quantity = item.instructions.can_update_quantity | default: true %}
+                              {% if is_cart_progress_gift or item.product.tags contains 'gift-product' %}
+                                {% assign can_update_quantity = false %}
+                              {% endif %}
                               <button
                                 class="quantity__button"
                                 name="minus"
