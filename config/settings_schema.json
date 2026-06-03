@@ -1449,6 +1449,62 @@
         "id": "cart_color_scheme",
         "label": "t:sections.all.colors.label",
         "default": "scheme-1"
+      },
+      {
+        "type": "header",
+        "content": "Cart progress bar"
+      },
+      {
+        "type": "checkbox",
+        "id": "cart_progress_enabled",
+        "label": "Show cart progress bar",
+        "default": true
+      },
+      {
+        "type": "range",
+        "id": "cart_progress_shipping_threshold",
+        "min": 0,
+        "max": 100,
+        "step": 1,
+        "unit": "€",
+        "label": "Free shipping threshold",
+        "default": 25
+      },
+      {
+        "type": "text",
+        "id": "cart_progress_shipping_label",
+        "label": "Free shipping label",
+        "info": "{free shipping amount}  will append in the end.",
+        "default": "Kostenloser Versand ab"
+      },
+      {
+        "type": "range",
+        "id": "cart_progress_gift_threshold",
+        "min": 1,
+        "max": 100,
+        "step": 1,
+        "unit": "€",
+        "label": "Free gift threshold",
+        "default": 65
+      },
+      {
+        "type": "product",
+        "id": "cart_progress_gift_product",
+        "label": "Free gift product"
+      },
+      {
+        "type": "text",
+        "id": "cart_progress_gift_remaining_text",
+        "label": "Gift remaining text",
+        "info": "Use [amount] for the remaining amount and [gift] for the selected gift product.",
+        "default": "Noch [amount] bis zu [gift]!"
+      },
+      {
+        "type": "text",
+        "id": "cart_progress_gift_success_text",
+        "label": "Gift success text",
+        "info": "Use [gift] for the selected gift product.",
+        "default": "Sie erhalten [gift] gratis!"
       }
     ]
   }

@@ -1,0 +1,144 @@
+{% comment %}
+  Renders a reusable cart threshold progress bar.
+
+  Accepts:
+  - cart: {Object} Cart object
+  - shipping_threshold: {Number} Threshold in cents
+  - gift_threshold: {Number} Threshold in cents
+  - gift_product: {Object} Product object
+  - shipping_label: {String} Free shipping label
+  - shipping_prefix: {String} Text before the shipping threshold amount
+  - gift_remaining_text: {String} Gift text before threshold. Supports [amount] and [gift].
+  - gift_success_text: {String} Gift text after threshold. Supports [gift].
+
+  Usage:
+  {% render 'cart-progress-bar', cart: cart, shipping_threshold: 2500, gift_threshold: 6500, gift_product: product %}
+{% endcomment %}
+
+{%- liquid
+  assign shipping_threshold = shipping_threshold | default: 2500
+  assign gift_threshold = gift_threshold | default: 6500
+  assign gift_threshold = gift_threshold | at_least: shipping_threshold | at_least: 1
+  assign gift_name = 'Ihrem Geschenk'
+  assign gift_variant = blank
+  assign gift_line_key = blank
+  assign gift_line_keys = ''
+  assign gift_line_count = 0
+  assign gift_line_quantity = 0
+  assign shipping_label = shipping_label | default: 'Kostenloser Versand'
+  assign gift_remaining_text = gift_remaining_text | default: 'Noch [amount] bis zu [gift]!'
+  assign gift_success_text = gift_success_text | default: 'Sie erhalten [gift] gratis!'
+
+  if gift_product != blank
+    assign gift_name = gift_product.title
+    assign gift_variant = gift_product.selected_or_first_available_variant
+  endif
+
+  assign cart_total = 0
+
+  for item in cart.items
+    assign is_progress_gift = false
+
+    for property in item.properties
+      if property.first == '_cart_progress_gift' and property.last == 'true'
+        assign is_progress_gift = true
+        break
+      endif
+    endfor
+
+    if is_progress_gift
+      if gift_line_key == blank
+        assign gift_line_key = item.key
+        assign gift_line_quantity = item.quantity
+      endif
+
+      assign gift_line_keys = gift_line_keys | append: item.key | append: '||'
+      assign gift_line_count = gift_line_count | plus: 1
+    else
+      assign cart_total = cart_total | plus: item.original_line_price
+    endif
+  endfor
+
+  assign remaining_shipping = shipping_threshold | minus: cart_total | at_least: 0
+  assign remaining_gift = gift_threshold | minus: cart_total | at_least: 0
+  assign remaining_gift_money = remaining_gift | money_without_trailing_zeros
+  assign gift_success_name = gift_name
+
+  if gift_product == blank
+    assign gift_success_name = 'ein Geschenk'
+  endif
+
+  assign gift_remaining_message = gift_remaining_text | replace: '[amount]', remaining_gift_money | replace: '[gift]', gift_name
+  assign gift_success_message = gift_success_text | replace: '[gift]', gift_success_name
+
+  assign shipping_reached = false
+  assign gift_reached = false
+
+  if shipping_threshold <= 0 or cart_total >= shipping_threshold
+    assign shipping_reached = true
+  endif
+
+  if cart_total >= gift_threshold
+    assign gift_reached = true
+  endif
+
+  assign progress_percent = cart_total | times: 100 | divided_by: gift_threshold | at_most: 100
+  assign shipping_marker_percent = shipping_threshold | times: 100 | divided_by: gift_threshold
+
+  assign progress_state = 'locked'
+  if shipping_reached
+    assign progress_state = 'shipping'
+  endif
+  if gift_reached
+    assign progress_state = 'complete'
+  endif
+-%}
+
+<div
+  class="cart-progress cart-progress--{{ progress_state }}"
+  data-cart-progress
+  data-gift-threshold="{{ gift_threshold }}"
+  data-cart-total="{{ cart_total }}"
+  {% if gift_variant != blank and gift_variant.available %}
+    data-gift-variant-id="{{ gift_variant.id }}"
+  {% endif %}
+  {% if gift_line_key != blank %}
+    data-gift-line-key="{{ gift_line_key }}"
+    data-gift-line-keys="{{ gift_line_keys | escape }}"
+    data-gift-line-count="{{ gift_line_count }}"
+    data-gift-line-quantity="{{ gift_line_quantity }}"
+  {% endif %}
+  role="region"
+  aria-label="Warenkorb Vorteile"
+>
+  <div class="cart-progress__track" aria-hidden="true">
+    <span class="cart-progress__fill" style="width: {{ progress_percent }}%;"></span>
+    <span
+      class="cart-progress__milestone cart-progress__milestone--shipping{% if shipping_reached %} is-reached{% endif %}"
+      style="left: {{ shipping_marker_percent }}%;"
+    >
+      <span class="svg-wrapper">{{ 'icon-truck.svg' | inline_asset_content }}</span>
+    </span>
+    <span class="cart-progress__milestone cart-progress__milestone--gift{% if gift_reached %} is-reached{% endif %}">
+      <span class="cart-progress__gift-icon">{{ 'icon-gift.svg' | inline_asset_content }}</span>
+    </span>
+  </div>
+
+  <div class="cart-progress__messages">
+    <p class="cart-progress__message{% if shipping_reached %} is-reached{% endif %}">
+      {{ shipping_label | escape -}}
+      <br>
+      <strong>
+        {{ shipping_threshold | money_without_trailing_zeros -}}
+      </strong>
+    </p>
+
+    <p class="cart-progress__message cart-progress__message--gift{% if gift_reached %} is-reached{% endif %}">
+      {%- if gift_reached -%}
+        <strong>{{ gift_success_message | escape }}</strong>
+      {%- else -%}
+        {{ gift_remaining_message | escape }}
+      {%- endif -%}
+    </p>
+  </div>
+</div>

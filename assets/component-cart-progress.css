@@ -1,0 +1,117 @@
+.cart-progress {
+  --cart-progress-dark-gray: #b0b0b0;
+  --cart-progress-light-gray: #e8e8e8;
+  --cart-progress-green: #4a9500;
+
+  padding: 0.4rem 0 1.4rem;
+}
+
+.cart-progress__track {
+  position: relative;
+  height: 0.8rem;
+  margin: 0.8rem 1.2rem 1rem;
+  border-radius: 999px;
+  background: var(--cart-progress-light-gray);
+}
+
+.cart-progress__fill {
+  display: block;
+  height: 100%;
+  min-width: 0.8rem;
+  border-radius: inherit;
+  background: var(--cart-progress-dark-gray);
+  transition: width var(--duration-default) ease, background-color var(--duration-default) ease;
+}
+
+.cart-progress--shipping .cart-progress__fill,
+.cart-progress--complete .cart-progress__fill {
+  background: var(--cart-progress-green);
+}
+
+.cart-progress__milestone {
+  position: absolute;
+  top: 50%;
+  z-index: 1;
+  display: flex;
+  width: 3rem;
+  height: 3rem;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  color: #fff;
+  background: var(--cart-progress-dark-gray);
+  transform: translate(-50%, -50%);
+  transition: background-color var(--duration-default) ease;
+}
+
+.cart-progress__milestone--gift {
+  left: 98%;
+}
+
+.cart-progress__milestone.is-reached {
+  background: var(--cart-progress-green);
+}
+
+.cart-progress__milestone .svg-wrapper,
+.cart-progress__gift-icon {
+  width: 1.7rem;
+  height: 1.7rem;
+}
+
+.cart-progress__milestone svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  fill: currentColor;
+}
+
+.cart-progress__messages {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.4fr);
+  gap: 1.2rem;
+  align-items: start;
+  color: var(--cart-progress-dark-gray);
+  font-size: 1.1rem;
+  line-height: 1.25;
+  text-align: center;
+}
+
+.cart-progress__message {
+  margin: 0;
+}
+
+.cart-progress__message:first-child {
+  padding-left: 0.4rem;
+}
+
+.cart-progress__message--gift {
+  padding-right: 0.4rem;
+}
+
+.cart-progress__message.is-reached {
+  color: var(--cart-progress-green);
+  font-weight: 700;
+}
+
+.cart-progress__message--gift.is-reached {
+  display: flex;
+  min-height: 2.75rem;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+@media screen and (max-width: 420px) {
+  .cart-progress {
+    padding-bottom: 1.2rem;
+  }
+
+  .cart-progress__messages {
+    gap: 0.8rem;
+    font-size: 1rem;
+  }
+
+  .cart-progress__track {
+    margin-right: 1.4rem;
+    margin-left: 1.4rem;
+  }
+}
