@@ -127,6 +127,7 @@
     "cart_drawer_collection": "",
     "cart_color_scheme": "scheme-1",
     "cart_progress_gift_product": "kijimea-regularis",
+    "cart_progress_gift_success_text": "Sie erhalten ein Geschenk!",
     "sections": {
       "main-password-header": {
         "type": "main-password-header",
