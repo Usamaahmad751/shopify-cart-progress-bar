@@ -130,7 +130,7 @@
     "cart_progress_shipping_threshold": 40,
     "cart_progress_shipping_label": "Kostenloser Versand ab",
     "cart_progress_gift_threshold": 80,
-    "cart_progress_gift_product": "kijimea-regularis",
+    "cart_progress_gift_product": "unser-geschenk-fur-sie-kijimea-regularis",
     "cart_progress_gift_success_text": "Sie erhalten ein Geschenk!",
     "sections": {
       "main-password-header": {
