@@ -1,1 +1,24 @@
 {%- render 'cart-drawer' -%}
+{%schema %}
+{
+  "name": "Cart Drawer",
+  "blocks": [
+    {
+      "type": "progress_milestone",
+      "name": "Progress Milestone",
+      "settings": [
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Title"
+        },
+        {
+          "type": "number",
+          "id": "threshold",
+          "label": "Threshold"
+        }
+      ]
+    }
+  ]
+}
+{%endschema %}
