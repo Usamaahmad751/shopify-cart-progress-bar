@@ -126,7 +126,7 @@
     "show_cart_note": false,
     "cart_drawer_collection": "",
     "cart_color_scheme": "scheme-1",
-    "cart_progress_enabled": false,
+    "cart_progress_enabled": true,
     "cart_progress_shipping_threshold": 40,
     "cart_progress_gift_threshold": 70,
     "cart_progress_gift_product": "kijimea-regularis",
