@@ -1,0 +1,38 @@
+ <!-- seo  -->
+ <div id="seo_data" style="position:absolute; left:-99999999999px;">
+          <div>
+            <h1 class="product__title ">{{ product.title | escape }}</h1>
+            <a href="{{ product.url }}" class="product__title">
+              <h2 class="h1">
+                {{ product.title | escape }}
+              </h2>
+            </a>
+          </div>
+           <div>
+            <div id="price-{{ section.id }}" role="status">
+              {{ product.price | money_with_currency }}
+            </div>
+             {%- if product.description != blank -%}
+            <div>
+              {{ product.description }}
+            </div>
+          {%- endif -%}
+         </div>
+</div>
+<!-- end seo  -->
+<div 
+  id="product-configurator-root" 
+  class="product-configurator-container"
+  data-product-id="{{ product.id }}"
+  data-product-handle="{{ product.handle }}"
+  data-show-price="true"
+  data-layout="horizontal"
+>
+  <div class="configurator-loading">
+  </div>
+</div>
+{% schema %}
+{
+    "name": "TruBuild Product"
+}
+{% endschema %}
